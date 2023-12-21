@@ -1,0 +1,6 @@
+data-docker/
+scripts/__pycache__/
+scripts/commands/__pycache__/
+scripts/commands/*/__pycache__/
+.env
+configs/backup_config.json

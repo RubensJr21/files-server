@@ -1,0 +1,60 @@
+Configuração incial:
+Rodar o comando './server.sh build'
+Configurar o tema para ter padrões da estação
+    'php occ theming:config <key> <value>'
+    trocar:
+        name => Nextcloud - Estação Conhecimento de Serra
+        slogan => Desenvolvido por Rubens Jr
+        disable-user-theming => true
+        logo, logoheader,favicon => var/www/resources/logo.svg
+
+Configuração onlyoffice:
+Terminar instalação do Nextcloud
+Rodar o comando './server-scripts/enable-onlyoffice.sh'
+
+Configuração Backup: 
+Desabilitar o 'files_versions'
+'''bash
+docker-compose exec -u www-data nextcloud php occ app:disable files_versions
+'''
+Criar Script que instala o 'files_external' e 'backup'
+'''
+docker-compose exec -u www-data nextcloud php occ --no-warnings app:install files_external
+docker-compose exec -u www-data nextcloud php occ --no-warnings app:install backup
+'''
+Criar ponto de montagem backup usando um bucket chamado nextcloud (rever script de como fazer isso)
+    Copiar arquivo de configuração 'configs/files_external_config.json' para dentro do do container nextcloud (docker-compose.yml)
+    Imporar configuração por meio do comando 'docker-compose exec -u www-data php occ files_external:import /var/www/configs/files_external_config.json'
+Configurar backup para usar pasta 'backup' para backup e usar 'app_data' para guardar as informações de aplicação
+
+Exemplos de comando:
+php occ backu:point:create --output "json_pretty" --verbose -- "Comentario do backup"
+(docker-compose exec -u www-data nextcloud php occ backup:point:list) | grep -E -o '[0-9]{14}-full-[A-Za-z|0-9]{15}' | head -1
+
+
+Casos de erro:
+Configuração do backup:
+    desinstalar o backup e reinstalar
+PHP extension 'mysqli' is missing. Please install first. => verificar amanhã
+
+Referências:
+
+Solução do Backup:
+https://github.com/nextcloud/server/issues/19996#:~:text=%5BBug%5D%20Upload%20to%20external%20storage%20fails%20due%20to%20getUID()%20on%20null%20in%20flow%20notifications
+https://github.com/nextcloud/backup/issues/468#:~:text=CLI%20working%20on%20fresh%20install%20of%20Nextcloud%2026.0.1%20docker%20but%20I%20had%20to%20disable%20the%20versions%20app.
+https://stackoverflow.com/questions/67285745/how-can-i-get-minio-access-and-secret-key#:~:text=19-,If%20you%20use%20docker%3A,-environment%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20MINIO_ROOT_USER%3A%20%24%7BMINIO_ROOT_USER
+https://help.nextcloud.com/t/files-external-how-to-create-a-local-storage-with-occ-command/55543/4#:~:text=First%20create%20an%20external%20share%20using%20the%20GUI
+https://github.com/nextcloud/backup/issues/322#:~:text=Regarding%20this%20%22unable%20to%20fetch%20app%20data%22
+
+Configuração do onlyoffice:
+https://stackoverflow.com/questions/60591893/how-to-enable-mod-rewrite-module-for-docker-official-httpd-image
+https://hub.docker.com/_/httpd
+
+Configuração do minIO:
+https://github.com/minio/minio/blob/master/docs/orchestration/docker-compose/docker-compose.yaml
+https://docs.nextcloud.com/server/latest/admin_manual/configuration_files/primary_storage.html
+https://www.youtube.com/watch?v=XhTezM1Gd4Y
+
+Uso do comando grep:
+https://stackoverflow.com/questions/15712970/how-to-terminal-output-command-pipe-to-input-of-grep-and-using-regular-expressio#:~:text=5-,Two%20things%3A,-First%2C%20there%20is
+https://serverfault.com/questions/197123/getting-the-last-match-in-a-file-using-grep#:~:text=134-,You%20could%20try,-grep%20pattern%20file
