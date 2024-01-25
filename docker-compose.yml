@@ -9,7 +9,7 @@ services:
     image: nextcloud:fpm
     container_name: ${NEXTCLOUD_CONTAINER_NAME}
     hostname: ${NEXTCLOUD_HOSTNAME}
-    restart: always
+    restart: unless-stopped
     environment:
       TZ: ${NEXTCLOUD_TIME_ZONE}
 
@@ -39,7 +39,7 @@ services:
     image: mariadb:latest
     container_name: ${MARIADB_CONTAINER_NAME}
     hostname: ${MARIADB_HOSTNAME}
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MARIADB_MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MARIADB_MYSQL_DATABASE}
@@ -52,7 +52,7 @@ services:
     image: onlyoffice/documentserver:latest
     container_name: ${ONLYOFFICE_CONTAINER_NAME}
     hostname: ${ONLYOFFICE_HOSTNAME}
-    restart: always
+    restart: unless-stopped
     environment:
       JWT_SECRET: ${ONLYOFFICE_JWT_SECRET}
     expose:
@@ -68,7 +68,7 @@ services:
     image: minio/minio
     container_name: ${MINIO_CONTAINER_NAME}
     hostname: ${MINIO_HOSTNAME}
-    restart: always
+    restart: unless-stopped
     command: server --console-address ":9001" /data
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER} # AccessKey
@@ -88,7 +88,7 @@ services:
     image: nginx
     container_name: ${NGINX_CONTAINER_NAME}
     hostname: ${NGINX_HOSTNAME}
-    restart: always
+    restart: unless-stopped
     environment:
       NEXTCLOUD_HOSTNAME: ${NEXTCLOUD_HOSTNAME}
       ONLYOFFICE_HOSTNAME: ${ONLYOFFICE_HOSTNAME}
