@@ -32,8 +32,8 @@ services:
       - minIO-S3
       - nginx
     volumes:
-      - ~/servidor_de_arquivos/data-docker/nextcloud:/var/www/html
-      - ~/servidor_de_arquivos/resources/:/var/www/resources
+      - ~/files-server/data-docker/nextcloud:/var/www/html
+      - ~/files-server/resources/:/var/www/resources
   
   data_base:
     image: mariadb:latest
@@ -46,7 +46,7 @@ services:
       MYSQL_USER: ${MARIADB_MYSQL_USER}
       MYSQL_PASSWORD: ${MARIADB_MYSQL_PASSWORD}
     volumes:
-      - ~/servidor_de_arquivos/data-docker/mariaDB:/var/lib/mysql
+      - ~/files-server/data-docker/mariaDB:/var/lib/mysql
   
   onlyoffice:
     image: onlyoffice/documentserver:latest
@@ -59,10 +59,10 @@ services:
       - '80'
       - '443'
     volumes:
-      - ~/servidor_de_arquivos/data-docker/onlyoffice/logs:/var/log/onlyoffice
-      - ~/servidor_de_arquivos/data-docker/onlyoffice/data:/var/www/onlyoffice/Data
-      - ~/servidor_de_arquivos/data-docker/onlyoffice/lib:/var/lib/onlyoffice
-      - ~/servidor_de_arquivos/data-docker/onlyoffice/postgresql:/var/lib/postgresql
+      - ~/files-server/data-docker/onlyoffice/logs:/var/log/onlyoffice
+      - ~/files-server/data-docker/onlyoffice/data:/var/www/onlyoffice/Data
+      - ~/files-server/data-docker/onlyoffice/lib:/var/lib/onlyoffice
+      - ~/files-server/data-docker/onlyoffice/postgresql:/var/lib/postgresql
   
   minIO-S3:
     image: minio/minio
@@ -82,7 +82,7 @@ services:
       - '9000:9000'
       - '9001:9001'
     volumes:
-      - ~/servidor_de_arquivos/data-docker/minIO:/data
+      - ~/files-server/data-docker/minIO:/data
     
   nginx:
     image: nginx
