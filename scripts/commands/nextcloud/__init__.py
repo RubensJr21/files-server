@@ -25,7 +25,7 @@ def wait_installation():
     while True:
         try:
             statusOutCommand = subprocess.check_output(
-                "docker-compose exec -u www-data nextcloud php occ status", shell=True
+                "docker exec -u www-data nextcloud php occ status", shell=True
             ).decode("utf-8")
             if (re.search(" *- installed: (.*)", statusOutCommand).group(1).strip() == "true"):
                 condition_load.set()
