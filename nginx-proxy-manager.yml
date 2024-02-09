@@ -49,11 +49,11 @@ services:
       - ~/files-server/data-docker/nginx-proxy-manager/data:/data
       - ~/files-server/data-docker/nginx-proxy-manager/letsencrypt:/etc/letsencrypt
     depends_on:
-      - data_base
+      - data_base_npm
     networks:
       - npm-net
 
-  data_base:
+  data_base_npm:
     image: mariadb:latest
     container_name: ${MARIADB_CONTAINER_NAME}-npm
     hostname: ${MARIADB_HOSTNAME}-npm
@@ -71,4 +71,4 @@ services:
 
 networks:
   npm-net:
-    name: npm-net 
+    name: npm-net

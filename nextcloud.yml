@@ -13,8 +13,8 @@ services:
     environment:
       TZ: ${NEXTCLOUD_TIME_ZONE}
 
-      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
-      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+      # NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
+      # NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
       NEXTCLOUD_TRUSTED_DOMAINS: "${NEXTCLOUD_TRUSTED_DOMAINS}"
       
       NEXTCLOUD_DATA_DIR: ${NEXTCLOUD_DATA_DIR}
@@ -25,16 +25,16 @@ services:
       MYSQL_HOST: ${NEXTCLOUD_MYSQL_HOST}
     expose:
       - '80'
-      # - '9000'
+      - '9000'
     depends_on:
       - data_base
-      - onlyoffice
       - minIO-S3
     volumes:
       - ~/files-server/data-docker/nextcloud:/var/www/html
       - ~/files-server/resources/:/var/www/resources
     networks:
       - nextcloud-net
+      - npm-net
   
   data_base:
     image: mariadb:latest
@@ -49,25 +49,6 @@ services:
     volumes:
       - ~/files-server/data-docker/mariaDB:/var/lib/mysql
     networks:
-      nextcloud-net:
-        name: nextcloud-net
-  
-  onlyoffice:
-    image: onlyoffice/documentserver:latest
-    container_name: ${ONLYOFFICE_CONTAINER_NAME}
-    hostname: ${ONLYOFFICE_HOSTNAME}
-    restart: unless-stopped
-    environment:
-      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET}
-    expose:
-      - '80'
-      - '443'
-    volumes:
-      - ~/files-server/data-docker/onlyoffice/logs:/var/log/onlyoffice
-      - ~/files-server/data-docker/onlyoffice/data:/var/www/onlyoffice/Data
-      - ~/files-server/data-docker/onlyoffice/lib:/var/lib/onlyoffice
-      - ~/files-server/data-docker/onlyoffice/postgresql:/var/lib/postgresql
-    networks:
       - nextcloud-net
   
   minIO-S3:
@@ -79,11 +60,11 @@ services:
     environment:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER} # AccessKey
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD} # SecretKey
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://localhost:9000/servidor-s3/health/live"]
-    #   interval: 30s
-    #   timeout: 20s
-    #   retries: 3
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/servidor-s3/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
     ports:
       - '9000:9000'
       - '9001:9001'
@@ -91,9 +72,11 @@ services:
       - ~/files-server/data-docker/minIO:/data
     networks:
       - nextcloud-net
+      - npm-net
 
 networks:
     nextcloud-net:
         name: nextcloud-net
     npm-net:
         external: true
+        name: npm-net

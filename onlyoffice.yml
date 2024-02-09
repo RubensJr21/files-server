@@ -21,14 +21,16 @@ services:
       - ~/files-server/data-docker/onlyoffice/lib:/var/lib/onlyoffice
       - ~/files-server/data-docker/onlyoffice/postgresql:/var/lib/postgresql
     networks:
-            - onlyoffice-net
-            - nextcloud-net
-            - npm-net
+      - onlyoffice-net
+      - nextcloud-net
+      - npm-net
 
 networks:
   onlyoffice-net:
     name: onlyoffice-net
   nextcloud-net:
     external: true
+    name: nextcloud-net
   npm-net:
     external: true
+    name: npm-net
