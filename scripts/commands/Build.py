@@ -8,8 +8,7 @@ import scripts.commands.nextcloud as nextcloud
 class Build():
     def execute(self, option_out):
         # return option_out
-        execute.command("docker-compose -p \"servidor_de_arquivos\" -f nginx-proxy-manager.yml --env-file .env up -d --remove-orphans")
-        execute.command("docker-compose -p \"servidor_de_arquivos\" -f nextcloud.yml -f onlyoffice.yml--env-file .env up -d --remove-orphans")
+        execute.command("docker-compose -p \"servidor_de_arquivos\" --env-file .env up -d --remove-orphans")
 
         inicio = time.time()
         nextcloud.wait_installation()
@@ -23,8 +22,8 @@ class Build():
 
         config.Theme().execute()
 
-        if((input("deseja ativar o onlyoffice? (Y/n) ") in ["Y", "y"])):
-            config.OnlyOffice().execute()
+        # if((input("deseja ativar o onlyoffice? (Y/n) ") in ["Y", "y"])):
+        #     config.OnlyOffice().execute()
         
         input("pressione qualquer tecla para continuar...\n")
 

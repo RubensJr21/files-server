@@ -33,10 +33,11 @@ services:
   pihole:
     container_name: pihole
     image: pihole/pihole:latest
+    hostname: pihole
     # For DHCP it is recommended if you remove these ports and instead add: network_mode: "host"
     ports:
-      - "127.0.0.1:53:53/tcp"
-      - "127.0.0.1:53:53/udp"
+      - "53:53/tcp"
+      - "53:53/udp"
       - "8080:80/tcp"
     environment:
       TZ: "America/Sao_Paulo"
@@ -74,8 +75,8 @@ services:
     environment:
       TZ: ${NEXTCLOUD_TIME_ZONE}
 
-      # NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
-      # NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
+      NEXTCLOUD_ADMIN_USER: ${NEXTCLOUD_ADMIN_USER}
+      NEXTCLOUD_ADMIN_PASSWORD: ${NEXTCLOUD_ADMIN_PASSWORD}
       NEXTCLOUD_TRUSTED_DOMAINS: "${NEXTCLOUD_TRUSTED_DOMAINS}"
       
       NEXTCLOUD_DATA_DIR: ${NEXTCLOUD_DATA_DIR}
@@ -136,26 +137,26 @@ services:
       npm-net:
         ipv4_address: 192.168.1.7
   # Onlyoffice
-  onlyoffice:
-    image: onlyoffice/documentserver
-    container_name: ${ONLYOFFICE_CONTAINER_NAME}
-    hostname: ${ONLYOFFICE_HOSTNAME}
-    restart: unless-stopped
-    environment:
-      JWT_SECRET: ${ONLYOFFICE_JWT_SECRET}
-    expose:
-      - '80'
-      - '443'
-    volumes:
-      - ~/files-server/data-docker/onlyoffice/logs:/var/log/onlyoffice
-      - ~/files-server/data-docker/onlyoffice/data:/var/www/onlyoffice/Data
-      - ~/files-server/data-docker/onlyoffice/lib:/var/lib/onlyoffice
-      - ~/files-server/data-docker/onlyoffice/postgresql:/var/lib/postgresql
+  # onlyoffice:
+  #   image: onlyoffice/documentserver
+  #   container_name: ${ONLYOFFICE_CONTAINER_NAME}
+  #   hostname: ${ONLYOFFICE_HOSTNAME}
+  #   restart: unless-stopped
+  #   environment:
+  #     JWT_SECRET: ${ONLYOFFICE_JWT_SECRET}
+  #   expose:
+  #     - '80'
+  #     - '443'
+  #   volumes:
+  #     - ~/files-server/data-docker/onlyoffice/logs:/var/log/onlyoffice
+  #     - ~/files-server/data-docker/onlyoffice/data:/var/www/onlyoffice/Data
+  #     - ~/files-server/data-docker/onlyoffice/lib:/var/lib/onlyoffice
+  #     - ~/files-server/data-docker/onlyoffice/postgresql:/var/lib/postgresql
 
 networks:
   npm-net:
     name: npm-net
-    driver: host
+    driver: bridge
     ipam:
      config:
        - subnet: 192.168.1.0/24
